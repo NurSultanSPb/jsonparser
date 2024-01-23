@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.DoubleStream;
 
 public class Utility {
 
@@ -29,7 +30,11 @@ public class Utility {
             tickets.add(ticket);
         }
 
-        return tickets;
+        return getTicketsVVOTLV(tickets);
+    }
+
+    public List<Ticket> getTicketsVVOTLV (List<Ticket> tickets) {
+        return tickets.stream().filter(ticket -> ticket.getOrigin().equals("VVO") && ticket.getDestination().equals("TLV")).toList();
     }
 
     public String getMinValueOfTicketPerEachCompany(List<Ticket> tickets) {
@@ -71,7 +76,7 @@ public class Utility {
     }
 
     public double getDifferencePrice(List<Ticket> tickets) {
-        double[] prices = tickets.stream().mapToDouble(Ticket::getPrice).toArray();
+        double[] prices = Arrays.stream(tickets.stream().mapToDouble(Ticket::getPrice).toArray()).sorted().toArray();
         double averagePrice = Arrays.stream(prices).average().orElse(0);
         int n = prices.length;
         double medianPrice = n % 2 == 0 ? ((prices[n / 2 - 1] + prices[n / 2]) / 2) : prices[n / 2];
